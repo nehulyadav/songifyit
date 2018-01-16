@@ -183,12 +183,17 @@ $(".testClick").click(function () {
         responsiveVoice.speak(getCookie("person") + "added a song to play now");
 
         setTimeout(function(){writeUserData(addressValue);
-          firebase.database().ref("/users/now").once("value").then(function(snapshot) {
-                    snapshot.forEach(function(childSnapshot) {
-                   location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
 
+        firebase.database().ref("/users/now").on("child_added", function(snapshot, prevChildKey) {
+         location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
         });
-      });
+          
+      //     firebase.database().ref("/users/now").once("value").then(function(snapshot) {
+      //               snapshot.forEach(function(childSnapshot) {
+      //              location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+
+      //   });
+      // });
 
 
         }, 6000);
