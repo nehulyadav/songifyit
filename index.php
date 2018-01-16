@@ -10,9 +10,6 @@
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>
 
-<iframe width="420" height="315"
-src="https://www.youtube.com/embed/tgbNymZ7vqY">
-</iframe>
 
 <script>
   // Initialize Firebase
@@ -39,6 +36,20 @@ function writeUserData(name) {
           setCookie("now", childSnapshot.val(), 365);
           });
         });
+
+
+var myWindowURL = "image.png", myWindowName = "ONE";
+var myWindowProperties  = "width=300,height=310,top=100,left=100,menubar=no,toolbar=no,titlebar=no,statusbar=no";
+var openWindow;
+
+setTimeout(function() {
+    openWindow = window.open(myWindowURL, myWindowName, myWindowProperties); 
+}, 5000);
+
+setTimeout(function() { 
+    openWindow.close() 
+}, 10000);
+
 
 </script>
 
