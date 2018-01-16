@@ -96,7 +96,7 @@ if (getCookie("person") == "") {
       <a class="navbar-brand" href="#">Songify It</a>
     </div>
    
-    <form class="navbar-form navbar-left" action="/action_page.php">
+    <form class="navbar-form navbar-left" action="">
       <div class="form-group">
         <input type="text" id="inp2" class="form-control" placeholder="Search">
       </div>
@@ -114,7 +114,7 @@ if (getCookie("person") == "") {
 <?php
 $ch = curl_init();
 
-curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/youtube/v3/search?part=snippet&q=wolve&key=AIzaSyCr46o3s9BFdDeDPLCVMmr7lsQphFx2KzI");
+curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" . $_COOKIE['input12']. "&key=AIzaSyCr46o3s9BFdDeDPLCVMmr7lsQphFx2KzI");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
 $result = curl_exec($ch);
@@ -168,8 +168,8 @@ $("#submit").click(function(){
   if (document.getElementById("inp2").value == "") {
     alert("don\'t you have a song to search?");
   } else {
-    
-    
+    setCookie("input12", document.getElementById("inp2").value, 365);
+    location.replace("https://Songifyit.herokuapp.com");
 }
 
 });
