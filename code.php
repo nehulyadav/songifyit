@@ -7,15 +7,17 @@
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>
+
+
 <script>
   // Initialize Firebase
-var config = {
-    apiKey: "AIzaSyBaHSrorPiRAu3pXRD-4FMwmCxJAizRbss",
-    authDomain: "presentify-ee169.firebaseapp.com",
-    databaseURL: "https://presentify-ee169.firebaseio.com",
-    projectId: "presentify-ee169",
-    storageBucket: "",
-    messagingSenderId: "1045114376426"
+  var config = {
+    apiKey: "AIzaSyAm3dVYOrrJlYWX0jPOX37bee-kIImhVxA",
+    authDomain: "jinx-5cd2c.firebaseapp.com",
+    databaseURL: "https://jinx-5cd2c.firebaseio.com",
+    projectId: "jinx-5cd2c",
+    storageBucket: "jinx-5cd2c.appspot.com",
+    messagingSenderId: "866918358078"
   };
   firebase.initializeApp(config);
 
@@ -105,6 +107,7 @@ curl_close ($ch);
 
 echo '
 <script>
+
 $.each(' . $result . ', function(i, field){
 					if (i == "items") {
                			// console.log(field);
@@ -164,7 +167,9 @@ echo '
 
 $(".testClick").click(function () {
         var addressValue = $(this).attr("name");
-        //alert(addressValue );
+        //alert(addressValue);
+        writeUserData(addressValue);
+
         location.replace("https://www.youtube.com/watch?v="+addressValue);
     });
 
