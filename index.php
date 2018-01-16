@@ -37,20 +37,6 @@ function writeUserData(name) {
           });
         });
 
-
-var myWindowURL = "image.png", myWindowName = "ONE";
-var myWindowProperties  = "width=300,height=310,top=100,left=100,menubar=no,toolbar=no,titlebar=no,statusbar=no";
-var openWindow;
-
-setTimeout(function() {
-    openWindow = window.open(myWindowURL, myWindowName, myWindowProperties); 
-}, 5000);
-
-setTimeout(function() { 
-    openWindow.close() 
-}, 10000);
-
-
 </script>
 
 
