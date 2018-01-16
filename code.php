@@ -165,7 +165,7 @@ echo '
 $(".testClick").click(function () {
         var addressValue = $(this).attr("name");
         //alert(addressValue );
-        location.replace("https://www.youtube.com/watch?v="+addressValue+"?rel=0&autoplay=1");
+        location.replace("https://www.youtube.com/watch?v="+addressValue);
     });
 
 </script>
