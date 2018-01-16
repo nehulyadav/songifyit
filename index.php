@@ -28,6 +28,13 @@ function writeUserData(name) {
   });
 }
 
+ firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
+           snapshot.forEach(function(childSnapshot) {       
+          // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+          setCookie("now", childSnapshot.val(), 365);
+          });
+        });
+
 </script>
 
 
@@ -186,8 +193,9 @@ $(".testClick").click(function () {
 
         firebase.database().ref("/users/now").on("child_added", function(snapshot, prevChildKey) {
          location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+
         });
-          
+
       //     firebase.database().ref("/users/now").once("value").then(function(snapshot) {
       //               snapshot.forEach(function(childSnapshot) {
       //              location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
@@ -202,6 +210,24 @@ $(".testClick").click(function () {
 
         //location.replace("https://www.youtube.com/watch?v="+addressValue);
     });
+
+
+
+
+setInterval(function(){ 
+
+ firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
+           snapshot.forEach(function(childSnapshot) {       
+          // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+         if (getCookie("now") != childSnapshot.val()) {
+            location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+         }
+          });
+        });
+
+
+}, 2000);
+
 
 </script>
 
