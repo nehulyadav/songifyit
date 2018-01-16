@@ -12,19 +12,19 @@
 <script>
   // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyBaHSrorPiRAu3pXRD-4FMwmCxJAizRbss",
-    authDomain: "presentify-ee169.firebaseapp.com",
-    databaseURL: "https://presentify-ee169.firebaseio.com",
-    projectId: "presentify-ee169",
-    storageBucket: "",
-    messagingSenderId: "1045114376426"
+    apiKey: "AIzaSyAm3dVYOrrJlYWX0jPOX37bee-kIImhVxA",
+    authDomain: "jinx-5cd2c.firebaseapp.com",
+    databaseURL: "https://jinx-5cd2c.firebaseio.com",
+    projectId: "jinx-5cd2c",
+    storageBucket: "jinx-5cd2c.appspot.com",
+    messagingSenderId: "866918358078"
   };
   firebase.initializeApp(config);
 
 function writeUserData(name) {
   var database = firebase.database();
-  firebase.database().ref('users/' + name).set({
-    title: " "
+  firebase.database().ref('users/now').set({
+    title: name
   });
 }
 
@@ -181,7 +181,21 @@ $(".testClick").click(function () {
         var addressValue = $(this).attr("name");
         alert(addressValue);
         responsiveVoice.speak(getCookie("person") + "added a song to play now");
-        location.replace("https://www.youtube.com/watch?v="+addressValue);
+
+        setTimeout(function(){writeUserData(addressValue);
+          firebase.database().ref("/users/now").once("value").then(function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                   location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+
+        });
+      });
+
+
+        }, 6000);
+
+
+
+        //location.replace("https://www.youtube.com/watch?v="+addressValue);
     });
 
 </script>
