@@ -147,7 +147,7 @@ if (getCookie("person") == "") {
   } else {
     setCookie("input12", document.getElementById("inp2").value, 365);
     //alert(getCookie("input12"));
-    location.replace("http://localhost:8888/collate/newcode.php");
+    location.replace("https://songifyit.herokuapp.com");
 }
 
 }
