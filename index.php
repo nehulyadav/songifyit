@@ -57,12 +57,12 @@ function writeUserData(name) {
   });
 }
 
- firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
-           snapshot.forEach(function(childSnapshot) {       
-          // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
-          setCookie("now", childSnapshot.val(), 365);
-          });
-        });
+ // firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
+ //           snapshot.forEach(function(childSnapshot) {       
+ //          // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+ //          setCookie("now", childSnapshot.val(), 365);
+ //          });
+ //        });
 
 
  function readTextFile(file)
@@ -76,13 +76,18 @@ function writeUserData(name) {
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 var allText = rawFile.responseText;
-                setCookie("file", allText, 365);
-                //alert(allText);
+                if (getCookie("now") == allText.split(",")[1].trim()) {
+                    setCookie("src", allText.split(",")[0].trim(), 365);
+
+                }
             }
         }
     }
     rawFile.send(null);
 }
+
+// alert(getCookie("now"));
+// readTextFile("file.txt");
 
 
 </script>
@@ -116,23 +121,52 @@ if (getCookie("person") == "") {
 
 <body>
 
+
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">Songify It</a>
     </div>
    
-    <form class="navbar-form navbar-left" action="">
-      <div class="form-group">
-        <input type="text" id="inp2" class="form-control" placeholder="Search">
-      </div>
-      <button id="submit" type="submit" class="btn btn-default">Submit</button>
-    </form>
+    <button onclick="myFunction()">Click me</button>
+<input id="inp2" onkeypress="return runScript(event)"></input>
+
   </div>
 </nav>
 
 <div id="d" class="container" style="margin-top:100px">
 </div>
+
+
+<script type="text/javascript">
+  
+  function myFunction() {
+    if (document.getElementById("inp2").value == "") {
+    alert("don\'t you have a song to search?");
+  } else {
+    setCookie("input12", document.getElementById("inp2").value, 365);
+    //alert(getCookie("input12"));
+    location.replace("http://localhost:8888/collate/newcode.php");
+}
+
+}
+
+
+function runScript(e) {
+    if (e.keyCode == 13) {
+        if (document.getElementById("inp2").value == "") {
+    alert("don\'t you have a song to search?");
+  } else {
+    setCookie("input12", document.getElementById("inp2").value, 365);
+    //alert(getCookie("input12"));
+    location.replace("http://localhost:8888/collate/newcode.php");
+}
+    }
+}
+
+ 
+</script>
 
  </body>
 
@@ -151,10 +185,11 @@ function openNewBackgroundTab(){
     var evt = document.createEvent("MouseEvents");    
     evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, false, 0, null);
     a.dispatchEvent(evt);
-      alert("done");
+
     var myVar = setInterval(function(){ 
-      readTextFile("file.txt");
-      var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + getCookie("file") + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
+      readTextFile("file.txt"); // after n.js sets it
+      
+      var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + getCookie("src") + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
     alert(s);
   document.getElementById("vid").innerHTML = s;
 
@@ -162,11 +197,11 @@ function openNewBackgroundTab(){
 
  vid.addEventListener("loadeddata", function () {
            clearInterval(myVar);
-            //alert("Video has started loading successfully!");
- });
 
+             //alert("Video has started loading successfully!");
+  });
 
-   }, 15000);
+   }, 24000);
 
 
  // setTimeout(function(){ 
@@ -175,7 +210,7 @@ function openNewBackgroundTab(){
  //     document.getElementById("vid").innerHTML = "";
  //   }
 
- //   }, 15000);
+ //   }, 17000);
 
 
 }
@@ -189,8 +224,9 @@ function openNewBackgroundTab(){
 
 <?php
 $ch = curl_init();
+echo $_COOKIE['input12'];
 
-curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" . $_COOKIE['input12']. "&key=AIzaSyCr46o3s9BFdDeDPLCVMmr7lsQphFx2KzI");
+curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" . urlencode($_COOKIE['input12']) . "&key=AIzaSyCr46o3s9BFdDeDPLCVMmr7lsQphFx2KzI");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
 $result = curl_exec($ch);
@@ -240,15 +276,6 @@ $.each(' . $result . ', function(i, field){
             });
 
 
-$("#submit").click(function(){
-  if (document.getElementById("inp2").value == "") {
-    alert("don\'t you have a song to search?");
-  } else {
-    setCookie("input12", document.getElementById("inp2").value, 365);
-    location.replace("https://Songifyit.herokuapp.com");
-}
-
-});
 
 
 
@@ -265,16 +292,19 @@ $(".testClick").click(function () {
         alert(addressValue);
         responsiveVoice.speak(getCookie("person") + "added a song to play now");
 
-        setTimeout(function(){writeUserData(addressValue);
-
-         firebase.database().ref("/users/now").once("value").then(function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
-          setCookie("newval", childSnapshot.val(), 365);
-         // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+        setTimeout(function(){
+          setCookie("now", addressValue, 365);
+          writeUserData(addressValue); //sets now cookie
           openNewBackgroundTab();
-          //location.replace("w.php");
-          });
-        });
+
+        //  firebase.database().ref("/users/now").once("value").then(function(snapshot) {
+        //   snapshot.forEach(function(childSnapshot) {
+        //   setCookie("newval", childSnapshot.val(), 365);
+        //  // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+        //   openNewBackgroundTab();
+        //   //location.replace("w.php");
+        //   });
+        // });
 
       //     firebase.database().ref("/users/now").once("value").then(function(snapshot) {
       //               snapshot.forEach(function(childSnapshot) {
@@ -294,22 +324,24 @@ $(".testClick").click(function () {
     });
 
 
- setInterval(function(){ 
+ // setInterval(function(){ 
 
-  firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
-            snapshot.forEach(function(childSnapshot) {       
-            //location.replace("https:www.youtube.com/watch?v="+childSnapshot.val());
-          if (getCookie("now") != childSnapshot.val()) {
-                setCookie("now", childSnapshot.val(), 365);
-             //location.replace("https:www.youtube.com/watch?v="+childSnapshot.val());
-                alert("referes");
-              var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + getCookie("file") + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
-   document.getElementById("vid").innerHTML = s;
-          }
-           });
-         });
+ //  firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
+ //            snapshot.forEach(function(childSnapshot) {       
+ //            //location.replace("https:www.youtube.com/watch?v="+childSnapshot.val());
+ //          if (getCookie("now") != childSnapshot.val()) {
+ //                setCookie("now", childSnapshot.val(), 365);
+ //             //location.replace("https:www.youtube.com/watch?v="+childSnapshot.val());
+ //                alert("referes");
+ //                if (document.getElementById("myVideo").src != getCookie("file") ) {
+ //              var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + getCookie("file") + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
+ //   document.getElementById("vid").innerHTML = s;
+ // }
+ //          }
+ //           });
+ //         });
 
- }, 2000);
+ // }, 2000);
 
 
 </script>
