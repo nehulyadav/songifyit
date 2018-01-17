@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<div id="vid"></div>
+
 <head>
 <script src='//vws.responsivevoice.com/v/e?key=lGte4szv'></script>
 <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
@@ -10,9 +12,31 @@
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js"></script>
 
-<iframe width="420" height="315"
-src="https://www.youtube.com/embed/tgbNymZ7vqY">
-</iframe>
+
+<script type="text/javascript">
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+</script>
 
 <script>
   // Initialize Firebase
@@ -40,34 +64,31 @@ function writeUserData(name) {
           });
         });
 
-</script>
 
-
-
-<script type="text/javascript">
-  function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
+ function readTextFile(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                setCookie("file", allText, 365);
+                //alert(allText);
+            }
         }
     }
-    return "";
+    rawFile.send(null);
 }
+
+
 </script>
+
+
+
 
 <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -114,6 +135,56 @@ if (getCookie("person") == "") {
 </div>
 
  </body>
+
+<?php
+
+echo '
+<script type="text/javascript">
+
+function openNewBackgroundTab(){
+  // alert(getCookie("i"));
+  // alert(getCookie("i").split(",")[getCookie("i").split(",").length-1] + ".png");
+    //alert(getCookie("newval"));
+
+    var a = document.createElement("a");
+    a.href = "w.php";
+    var evt = document.createEvent("MouseEvents");    
+    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, false, 0, null);
+    a.dispatchEvent(evt);
+      alert("done");
+    var myVar = setInterval(function(){ 
+      readTextFile("file.txt");
+      var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + getCookie("file") + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
+    alert(s);
+  document.getElementById("vid").innerHTML = s;
+
+ var vid = document.getElementById("myVideo");
+
+ vid.addEventListener("loadeddata", function () {
+           clearInterval(myVar);
+            //alert("Video has started loading successfully!");
+ });
+
+
+   }, 15000);
+
+
+ // setTimeout(function(){ 
+
+ //   if (getCookie("on") != "on") {
+ //     document.getElementById("vid").innerHTML = "";
+ //   }
+
+ //   }, 15000);
+
+
+}
+</script>
+
+';
+
+
+?>
 
 
 <?php
@@ -196,13 +267,19 @@ $(".testClick").click(function () {
 
         setTimeout(function(){writeUserData(addressValue);
 
-        firebase.database().ref("/users/now").on("child_added", function(snapshot, prevChildKey) {
-         location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
-
+         firebase.database().ref("/users/now").once("value").then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+          setCookie("newval", childSnapshot.val(), 365);
+         // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
+          openNewBackgroundTab();
+          //location.replace("w.php");
+          });
         });
 
       //     firebase.database().ref("/users/now").once("value").then(function(snapshot) {
       //               snapshot.forEach(function(childSnapshot) {
+     //             setCookie("newval", childSnapshot.val(), 365);
+       // openNewBackgroundTab();
       //              location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
 
       //   });
@@ -217,21 +294,22 @@ $(".testClick").click(function () {
     });
 
 
+ setInterval(function(){ 
 
+  firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
+            snapshot.forEach(function(childSnapshot) {       
+            //location.replace("https:www.youtube.com/watch?v="+childSnapshot.val());
+          if (getCookie("now") != childSnapshot.val()) {
+                setCookie("now", childSnapshot.val(), 365);
+             //location.replace("https:www.youtube.com/watch?v="+childSnapshot.val());
+                alert("referes");
+              var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + getCookie("file") + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
+   document.getElementById("vid").innerHTML = s;
+          }
+           });
+         });
 
-setInterval(function(){ 
-
- firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
-           snapshot.forEach(function(childSnapshot) {       
-          // location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
-         if (getCookie("now") != childSnapshot.val()) {
-            location.replace("https://www.youtube.com/watch?v="+childSnapshot.val());
-         }
-          });
-        });
-
-
-}, 2000);
+ }, 2000);
 
 
 </script>
@@ -240,3 +318,8 @@ setInterval(function(){
 
 
 ?>
+
+
+
+
+</html>
