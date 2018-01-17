@@ -181,7 +181,7 @@ function openNewBackgroundTab(){
     //alert(getCookie("newval"));
 
     var a = document.createElement("a");
-    a.href = "w.php";
+    a.href = "https://42eb4777.ngrok.io/w.php";
     var evt = document.createEvent("MouseEvents");    
     evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, false, 0, null);
     a.dispatchEvent(evt);
