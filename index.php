@@ -147,7 +147,7 @@ if (getCookie("person") == "") {
   } else {
     setCookie("input12", document.getElementById("inp2").value, 365);
     //alert(getCookie("input12"));
-    location.replace("https://songifyit.herokuapp.com");
+    location.replace("http://localhost:8888/collate/newcode.php");
 }
 
 }
@@ -181,21 +181,23 @@ function openNewBackgroundTab(){
     //alert(getCookie("newval"));
 
     var a = document.createElement("a");
-    a.href = "https://42eb4777.ngrok.io/collate/w.php";
+    a.href = "w.php";
     var evt = document.createEvent("MouseEvents");    
     evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, true, false, false, false, 0, null);
     a.dispatchEvent(evt);
 
     var myVar = setInterval(function(){ 
       readTextFile("file.txt"); // after n.js sets it
-      
+                writeUserData(getCookie("now")); //sets now cookie
+
       var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + getCookie("src") + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
-    alert(s);
+    //alert(s);
   document.getElementById("vid").innerHTML = s;
 
  var vid = document.getElementById("myVideo");
 
  vid.addEventListener("loadeddata", function () {
+
            clearInterval(myVar);
 
              //alert("Video has started loading successfully!");
@@ -224,7 +226,7 @@ function openNewBackgroundTab(){
 
 <?php
 $ch = curl_init();
-echo $_COOKIE['input12'];
+//echo $_COOKIE['input12'];
 
 curl_setopt($ch, CURLOPT_URL, "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" . urlencode($_COOKIE['input12']) . "&key=AIzaSyCr46o3s9BFdDeDPLCVMmr7lsQphFx2KzI");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -294,7 +296,7 @@ $(".testClick").click(function () {
 
         setTimeout(function(){
           setCookie("now", addressValue, 365);
-          writeUserData(addressValue); //sets now cookie
+          // writeUserData(addressValue); //sets now cookie
           openNewBackgroundTab();
 
         //  firebase.database().ref("/users/now").once("value").then(function(snapshot) {
@@ -324,7 +326,7 @@ $(".testClick").click(function () {
     });
 
 
- // setInterval(function(){ 
+  setInterval(function(){ 
 
  //  firebase.database().ref("/users/now").once("value").then(function(snapshot) {  
  //            snapshot.forEach(function(childSnapshot) {       
@@ -341,7 +343,17 @@ $(".testClick").click(function () {
  //           });
  //         });
 
- // }, 2000);
+firebase.database().ref("/users/now").on("child_changed", function(snapshot) {
+  var changedPost = snapshot.val();
+  var s = "<video id=\"myVideo\" controls autoplay><source src=\"" + changedPost + "\" type=\"video/mp4\"><p>Your browser does not support H.264/MP4.</p></video>";
+   // alert(s);
+  document.getElementById("vid").innerHTML = s;
+
+  console.log("The updated post title is " + changedPost);
+});
+
+
+  }, 2000);
 
 
 </script>
